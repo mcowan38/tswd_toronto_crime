@@ -25,3 +25,8 @@ uv add polars numpy datetime pydantic					# add packages
 									# datetime: similar to lubridate (R); https://docs.python.org/3/library/datetime.html
 									# pydantic: for validation (checking rows, etc.); https://docs.pydantic.dev/latest/
 
+Acquire data added (02-download_data.py).
+- Initially saved as a paraquet (https://tellingstorieswithdata.com/21-python_essentials.html).
+- Realized maintaining original .csv and .xlsx is fine here. Deleted paraquet files and added files via write_csv and write_excel (xlsxwriter).
+- Auto-complete was on from multiple prior extensions in VScode. Disabled with settings.json (and turned off extensions).
+- Removed .qodo folder; disabled Qodo Gen and Path Intellisense extensions.

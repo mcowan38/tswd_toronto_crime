@@ -17,27 +17,27 @@ import numpy as np
 url_1= "https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/neighbourhood-crime-rates/resource/02898503-a367-4221-9e74-7addb260d110/download/neighbourhood-crime-rates%20-%204326.csv"
 
 # Read the CSV into a Polars DataFrame
-df = pl.read_csv(url_1)
+df_crime = pl.read_csv(url_1)
 
 # Save the raw data
-df.write_parquet("data/raw_data/neighbhourhood_crime.parquet")
+df_crime.write_csv("data/01-raw_data/neighbhourhood_crime.csv")
 
-#### Download 1st XLSX data (https://docs.pola.rs/api/python/stable/reference/api/polars.read_excel.html) ####
+#### Download 1st xlsx data (https://docs.pola.rs/api/python/stable/reference/api/polars.read_excel.html) ####
 # URL Ward Name/Numbers xlsx file
 url_2= "https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/6678e1a6-d25f-4dff-b2b7-aa8f042bc2eb/resource/ea4cc466-bd4d-40c6-a616-7abfa9d7398f/download/25-WardNames-Numbers.xlsx"
 
 # Read the xlsx into a Polars DataFrame
-df = pl.read_excel(url_2)
+df_ward_name = pl.read_excel(url_2)
 
 # Save the raw data
-df.write_parquet("data/raw_data/ward_names.parquet")
+df_ward_name.write_excel("data/01-raw_data/ward_names.xlsx")
 
-#### Download 2nd XLSX data (https://docs.pola.rs/api/python/stable/reference/api/polars.read_excel.html) ####
+#### Download 2nd xlsx data (https://docs.pola.rs/api/python/stable/reference/api/polars.read_excel.html) ####
 # URL Ward Profile xlsx file
 url_3= "https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/6678e1a6-d25f-4dff-b2b7-aa8f042bc2eb/resource/16a31e1d-b4d9-4cf0-b5b3-2e3937cb4121/download/2023-WardProfiles-2011-2021-CensusData.xlsx"
 
 # Read the xlsx into a Polars DataFrame
-df = pl.read_excel(url_3)
+df_ward_census = pl.read_excel(url_3)
 
 # Save the raw data
-df.write_parquet("data/raw_data/ward_census.parquet")
+df_ward_census.write_excel("data/01-raw_data/ward_census.xlsx")
