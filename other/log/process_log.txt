@@ -1,0 +1,27 @@
+https://tellingstorieswithdata.com/21-python_essentials.html#fig-vscodesetup-c
+
+B.2 Python, VS Code, and uv
+Installed via pip (replacing pip as a package installer?) in Command Prompt
+-m pip install --upgrade uv
+# Prompted to install upgraded new release of pip: 25.0.1 -> 25.1.1
+
+Terminal: text-based interface where you type commands to interact with your computer.
+Shell: program that interprets these commands.
+
+Shell Type:			Platform:		Example Syntax:
+PowerShell			Windows			Get-ChildItem, ls, python
+CMD (Command Prompt)		Windows			dir, cd, copy
+Bash (e.g. Git Bash)		Linux/macOS		ls, cd, ./run.sh
+Zsh / Fish			Unix shells		Like Bash, with extras
+R, Python shells		Language REPLs		For writing in R or Python interactively
+
+B.3 Getting started
+cd "C:\Users\Mcowa\OneDrive\Documents\GitHub\tswd_toronto_crime" 	# change directory to GitHub repo
+uv init toronto_crime 							# creates project-specific virtual environment (.venv appears)
+									# project’s dependencies (polars, numpy, etc.) installed and isolated.
+uv add polars numpy datetime pydantic					# add packages
+									# polars: manipulating dfs, similar to pandas; https://pola.rs/
+									# numpy: simulating data (numbers/arrays); https://numpy.org/
+									# datetime: similar to lubridate (R); https://docs.python.org/3/library/datetime.html
+									# pydantic: for validation (checking rows, etc.); https://docs.pydantic.dev/latest/
+

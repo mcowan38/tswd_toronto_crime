@@ -1,0 +1,12 @@
+[project]
+name = "toronto-crime"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "datetime>=5.5",
+    "numpy>=2.2.5",
+    "polars>=1.29.0",
+    "pydantic>=2.11.4",
+]
