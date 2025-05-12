@@ -17,8 +17,8 @@ np.random.seed(853)
 
 
 #### Simulate data ####
-# Ward names
-states = [
+# Toronto Neighbourhoods (2021)
+neighbhourhoods = [
     "Etobicoke North", "Etobicoke Centre", "Etobicoke-Lakeshore", "Parkdale-High Park",
     "York South-Weston", "York Centre", "Humber River-Black Creek", "Eglinton-Lawrence",
     "Davenport", "Spadina-Fort York", "University-Rosedale", "Toronto-St. Paul’s",
