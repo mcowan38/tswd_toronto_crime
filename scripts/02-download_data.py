@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Downloads and saves Toronto neighbhourhood profile and crime data from Open Data Toronto
+# Purpose: Downloads and saves Toronto neighbhourhood profile and crime data from Open Data Toronto website.
 # Author: Michael Cowan
 # Date: 9 May 2024
 # Contact: m.cowan@mail.utoronto.ca
