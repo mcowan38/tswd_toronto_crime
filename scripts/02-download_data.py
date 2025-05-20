@@ -1,33 +1,55 @@
 #### Preamble ####
-# Purpose: Downloads and saves Toronto neighbhourhood profile and crime data from Open Data Toronto website.
-# Author: Michael Cowan
-# Date: 9 May 2024
+# Purpose: Downloads and saves Toronto neighbourhood profile and crime data from Open Data Toronto CKAN.
+# Author: Mike Cowan
+# Date: 19 May 2025
 # Contact: m.cowan@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
-
+# Pre-requisites:
+# - `requests` must be installed (pip install requests)
 
 #### Workspace setup ####
-import polars as pl
-import numpy as np
+import requests
 
-#### Download CSV data ####
-# URL crime CSV file
-url_1= "https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/neighbourhood-crime-rates/resource/02898503-a367-4221-9e74-7addb260d110/download/neighbourhood-crime-rates%20-%204326.csv"
+#### Download data ####
+# Toronto Open Data is stored in a CKAN instance. It's APIs are documented here:
+# [https://docs.ckan.org/en/latest/api/]
 
-# Read the CSV into a Polars DataFrame
-df_crime = pl.read_csv(url_1)
+# To hit our API, you'll be making requests to:
+base_url = "https://ckan0.cf.opendata.inter.prod-toronto.ca"
 
-# Save the raw data
-df_crime.write_csv("data/01-raw_data/neighbhourhood_crime.csv")
+# Datasets are called "packages". Each package can contain many "resources"
+# To retrieve the metadata for this package and its resources, use the package name in this page's URL:
+url = base_url + "/api/3/action/package_show"
 
-#### Download xlsx data (https://docs.pola.rs/api/python/stable/reference/api/polars.read_excel.html) ####
-# URL Neighbhourhood Profiles xlsx file
-url_2= "https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/6e19a90f-971c-46b3-852c-0c48c436d1fc/resource/19d4a806-7385-4889-acf2-256f1e079060/download/neighbourhood-profiles-2021-158-model.xlsx"
+# Crime package
+params_crime = {"id": "neighbourhood-crime-rates"}
+package_crime = requests.get(url, params=params_crime).json()
 
-# Read the xlsx into a Polars DataFrame
-df_profiles = pl.read_excel(url_2)
+# Profile package
+params_profile = {"id": "neighbourhood-profiles"}
+package_profile = requests.get(url, params=params_profile).json()
 
-# Save the raw data
-df_profiles.write_excel("data/01-raw_data/neighbhourhood_profiles.xlsx")
+# To get resource data for crime:
+for c_idx, c_resource in enumerate(package_crime["result"]["resources"]):
+    # for datastore_active resources:
+    if c_resource["datastore_active"]:
+        # To get all records in CSV format:
+        c_url = base_url + "/datastore/dump/" + c_resource["id"]
+        c_resource_dump_data = requests.get(c_url).text
+        #### Save string data to CSV file ####
+        # [https://docs.python.org/3/library/functions.html#open]
+        with open(
+            "data/01-raw_data/neighbourhood_crime.csv", "w", encoding="utf-8"
+        ) as f:
+            f.write(c_resource_dump_data)
+
+# To get resource data for profiles:
+for p_idx, p_resource in enumerate(package_profile["result"]["resources"]):
+    # To get all records in XLSX format:
+    if p_resource.get("format", "").lower() == "xlsx":
+        p_url = p_resource["url"]
+        p_resource_dump_data = requests.get(p_url).content
+        #### Save bytes data to XLSX file ####
+        # [https://docs.python.org/3/library/functions.html#open]
+        with open("data/01-raw_data/neighbourhood_profiles.xlsx", "wb") as f:
+            f.write(p_resource_dump_data)
