@@ -1,13 +1,26 @@
 [project]
-name = "toronto-crime"
+name = "tswd-toronto-crime"
 version = "0.1.0"
-description = "Add your description here"
+description = "K-means clustering of Toronto crime data using time series analysis."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "datetime>=5.5",
-    "numpy>=2.2.5",
-    "polars>=1.29.0",
-    "pydantic>=2.11.4",
+    "ipykernel>=6.29.5",
+    "ipython>=9.2.0",
+    "jupyter>=1.0.0", 
+    "matplotlib>=3.10.3",
+    "numpy>=2.2.6",
+    "polars>=1.30.0",
+    "fastexcel>=0.5.4",
+    "pyarrow>=20.0.0",
+    "pytest>=8.3.5",
     "requests>=2.32.3",
+    "scikit-learn>=1.6.1",
+    "scipy>=1.15.3",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "pytest>=8.3.5",
 ]
