@@ -10,24 +10,20 @@
 
 #### Workspace setup ####
 import polars as pl
-import polars_ds as pds
-import functools
-import operator
+import functools  # inherent to Python
+import operator  # inherent to Python
 
-#### Merge neighbourhood crime and profile data ####
-# Load cleaned crime df
+#### Load and merge neighbourhood crime and profile data ####
 crime_df = pl.read_csv("data/02-analysis_data/analysis_data_crime.csv")
-
-# Load cleaned neighbourhood profile df
 profile_df = pl.read_csv("data/02-analysis_data/analysis_data_profiles.csv")
 
-# Anti-join to identify any name mismatches; "which crime names do not appear in profile_df?
+# Anti-join to identify any name mismatches; "which crime names do not appear in profile_df?"
 # [https://docs.pola.rs/user-guide/transformations/joins/#semi-join]
 mismatches = crime_df.join(profile_df, on="neighbourhood", how="anti")
 print(mismatches.select("neighbourhood").unique().to_series().to_list())
 
 
-# Merge the two dataframes on the neighbourhood column
+# Merge the two DFs on the neighbourhood column
 # [https://dataguymichael.substack.com/p/the-ultimate-polars-cheat-sheet-for]
 merged_df = crime_df.join(
     profile_df,

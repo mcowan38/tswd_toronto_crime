@@ -6,13 +6,11 @@
 # License: MIT
 # Pre-requisites:
 # - `polars` must be installed (pip install polars)
-# - `numpy` must be installed (pip install numpy)
 
 #### Workspace setup ####
 import polars as pl
-import numpy as np
 
-#### Clean neighbourhood crime data ####
+#### Load and clean neighbourhood crime data ####
 # Neighbourhood crime data
 crime_df = pl.read_csv("data/01-raw_data/neighbourhood_crime.csv")
 

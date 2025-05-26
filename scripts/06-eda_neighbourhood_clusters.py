@@ -9,7 +9,7 @@
 # - `numpy` must be installed (pip install numpy)
 # - `matplotlib` must be installed (pip install matplotlib)
 # - `scikit-learn` must be installed (pip install scikit-learn)
-# - Note: attaching labels was working before when functioning off the silhouette, will fix ASAP.
+# Reference: https://scikit-learn.org/stable/modules/clustering.html#clustering-evaluation
 
 #### Workspace setup ####
 import polars as pl
@@ -23,27 +23,38 @@ from sklearn.cluster import (
 )  # Separate into k groups by minimizing within‐cluster variance
 from sklearn.metrics import (
     silhouette_score,
-)
-from sklearn.decomposition import PCA
+)  # Measure optimal k via silhouette score (higher is better)
 
-# [https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html]
-# [https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html]
-# [https://scikit-learn.org/stable/modules/generated/sklearn.metrics.silhouette_score.html]
-# [https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html]
 
 # Set random seed for reproducibility
 np.random.seed(838)
 
-# Load SES features
+
+#### Load SES features ####
 profiles = pl.read_csv("data/02-analysis_data/merged_data.csv")
-feature_cols = [
+ses_columns = [
     "education_rate",  # proportion adults with a bachelor’s degree or higher
     "prop_single_parent",  # proportion of single-parent households
     "unemployment_rate",  # % of the labour force unemployed
     "median_income",  # median household income
 ]
-# Convert the select columns to a float array
-X = profiles.select(feature_cols).to_numpy().astype(float)
+
+
+# Fill any missing rate columns with 0.0 (float)
+crime_types = ["assault", "breakenter", "robbery", "shooting"]
+years = [2019, 2020, 2021, 2022, 2023, 2024]
+
+# Create a list of feature columns for the SES and crime rates
+crime_rate_columns = [f"{crime}_rate_{year}" for crime in crime_types for year in years]
+
+# Combine the feature columns with the rate columns
+profiles = profiles.with_columns(
+    [pl.col(col).fill_null(0.0).alias(col) for col in crime_rate_columns]
+)
+
+# Convert the selected SES columns to a float array
+X = profiles.select(ses_columns).to_numpy().astype(float)
+
 
 # Scale features so each has mean=0, std=1 (prevents any one feature dominating)
 # [https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html]
@@ -52,6 +63,7 @@ X_scaled = scaler.fit_transform(X)
 
 
 # Find the best k via silhouette score (higher is better: range [-1,1])
+# [https://scikit-learn.org/stable/modules/generated/sklearn.metrics.silhouette_score.html]
 best_k, best_score = 3, -1
 for k in range(2, 7):
     labels = KMeans(n_clusters=k, random_state=42).fit_predict(X_scaled)
@@ -61,6 +73,7 @@ for k in range(2, 7):
         best_k, best_score = k, score
 print(f">>> best k = {best_k} (silhouette={best_score:.3f})\n")
 
+
 #### K-Means Cluster Model ####
 # Fit K-Means (k=3), attach integer cluster labels
 # [https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html#sklearn.cluster.KMeans.labels]
@@ -69,16 +82,30 @@ profiles = profiles.with_columns(
     pl.Series("cluster", kmeans.labels_)  # cluster ∈ {0,1,2}
 )
 
+
+# Map clusters to SES labels
+# [https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html#sklearn.cluster.KMeans.labels_]
+label_map = {0: "High Opportunity", 1: "Medium Opportunity", 2: "Low Opportunity"}
+
+profiles = profiles.with_columns(
+    pl.Series("cluster", kmeans.labels_),
+    pl.Series(
+        "Socioeconomic Index",  # renamed qualitative category
+        [label_map[c] for c in kmeans.labels_],
+    ),
+)
+
+
 # Summary stats for each cluster
 cluster_stats = (
     profiles.group_by("cluster")
     .agg(
         [
             pl.count("neighbourhood").alias("n"),
-            pl.mean("education_rate").alias("avg_education_rate"),
-            pl.mean("prop_single_parent").alias("avg_single_parent_share"),
-            pl.mean("unemployment_rate").alias("avg_unemployment_rate"),
-            pl.mean("median_income").alias("avg_median_income"),
+            pl.mean("education_rate").alias("average_education_rate"),
+            pl.mean("prop_single_parent").alias("average_single_parent_share"),
+            pl.mean("unemployment_rate").alias("average_unemployment_rate"),
+            pl.mean("median_income").alias("average_median_income"),
         ]
     )
     .sort("cluster")
@@ -94,4 +121,9 @@ print("\nNeighbourhood assignments:")
 print(clustered)
 
 #### Save cluster data ####
-clustered.write_csv("data/02-analysis_data/neighbourhood_clusters.csv")
+profiles.select(["neighbourhood", "cluster", "Socioeconomic Index"]).write_csv(
+    "data/02-analysis_data/neighbourhood_clusters.csv"
+)
+
+# Append cluster info back to merged_data
+profiles.write_csv("data/02-analysis_data/merged_data.csv")

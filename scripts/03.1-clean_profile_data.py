@@ -6,13 +6,11 @@
 # License: MIT
 # Pre-requisites:
 # - `polars` must be installed (pip install polars)
-# - `numpy` must be installed (pip install numpy)
 
 #### Workspace setup ####
 import polars as pl
-import numpy as np
 
-#### Clean neighbourhood profile data ####
+#### Load and clean neighbourhood profile data ####
 # Neighbourhood profile data
 profile_df = pl.read_excel("data/01-raw_data/neighbourhood_profiles.xlsx")
 
