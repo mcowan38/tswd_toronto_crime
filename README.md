@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repo tests the hypothesis that Toronto neighbourhoods with a higher proportion of single-parent households tend to experience higher rates of serious crime (i.e., assault, break and enter, homicide, robbery, and shooting incidents). The analysis, conducted in Python, utilizes the City of Toronto's neighbourhood crime data and census data from 2021.
+This repo tests the hypothesis that Toronto neighbourhoods with a higher proportion of single-parent households tend to experience higher rates of serious crime (i.e., assault, break and enter, homicide, robbery, and shooting incidents). The analysis, conducted in Python, utilizes the City of Toronto's neighbourhood crime data (2019-2024) and census data (2021)--attained from the Open Data Toronto Portal.
 
 
 ## File Structure
