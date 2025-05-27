@@ -82,6 +82,23 @@ fig_pca.suptitle(
 fig_pca.tight_layout(rect=[0, 0.03, 1, 0.95])
 fig_pca.savefig("other/figures/fig_2_cluster_comparisons.png", dpi=300)
 
+#### Check PCA scores ####
+# Fit PCA on the scaled matrix (using all components)
+pca_full = PCA().fit(scaled_matrix)
+
+# Explained variance ratio per component
+print("Explained variance ratio:", pca_full.explained_variance_ratio_)
+
+# Cumulative explained variance
+print("Cumulative explained variance:", pca_full.explained_variance_ratio_.cumsum())
+
+# Singular values (proportional to component strengths)
+print("Singular values:", pca_full.singular_values_)
+
+# Eigenvalues (variance captured by each principal axis)
+eigenvalues = pca_full.explained_variance_
+print("Eigenvalues:", eigenvalues)
+
 #### Cluster Metrics Evaluation ####
 # Compare models using Silhouette, Davies-Bouldin, and Calinski-Harabasz scores
 # [https://scikit-learn.org/stable/modules/clustering.html#clustering-evaluation]

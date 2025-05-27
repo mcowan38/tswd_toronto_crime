@@ -11,7 +11,7 @@
 #### Workspace setup ####
 import polars as pl
 import matplotlib.pyplot as plt
-from pathlib import Path
+from pathlib import Path  # inherent to Python
 
 #### Load data ####
 merged_data = pl.read_csv("data/02-analysis_data/merged_data.csv")
