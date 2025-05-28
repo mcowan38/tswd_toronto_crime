@@ -1,16 +1,18 @@
 https://tellingstorieswithdata.com/21-python_essentials.html#fig-vscodesetup-c
 
-# B.2 Python, VS Code, and uv
-Installed via pip (replacing pip as a package installer?) in Command Prompt [-m pip install --upgrade uv]
-- Prompted to install upgraded new release of pip: 25.0.1 -> 25.1.1
-
+(1) Python essentials
 # Terminal/Shell
 - Terminal: text-based interface where you type commands to interact with your computer.
 - Shell: program that interprets these commands.
 
+(2) Basic commands
 # Printing messages (f-string literals)
 - e.g., print(f"Hello, {name}!") 	# prints "Hello, name!" to the terminal (f-string literal)
 
+(3) Shell commands
+# Shell commands are used to interact with the operating system.
+# They can be executed in various shell environments, such as PowerShell, CMD, Bash, Zsh, etc.
+# Shell commands and their examples (syntax may vary by shell type):
 Shell Type:					Platform:			Example Syntax:
 PowerShell					Windows				Get-ChildItem, ls, python
 CMD (Command Prompt)		Windows				dir, cd, copy
@@ -18,49 +20,30 @@ Bash (e.g. Git Bash)		Linux/macOS			ls, cd, ./run.sh
 Zsh / Fish					Unix shells			Like Bash, with extras
 R, Python shells			Language REPLs		For writing in R or Python interactively
 
-# B.3 Getting started
-- cd "C:\Users\Mcowa\OneDrive\Documents\GitHub\tswd_toronto_crime" 	# change directory to GitHub repo
-- uv init toronto_crime 					# creates project-specific virtual environment (.venv appears)
-											# project’s dependencies (polars, numpy, etc.) installed and isolated.
+(4) Managing Python environments
+# Python environments: isolated spaces for running Python code with specific packages.
+# They help avoid conflicts between different projects' dependencies.
 
-- uv add polars numpy datetime pydantic		# add packages
+(5) Virtual environments
+# Virtual environments: self-contained directories that contain a Python interpreter and installed packages.
+# They allow you to manage dependencies for different projects separately.
+
+(6) Set GitHub repo directory
+# Set the directory to your GitHub repository where you want to work on your Python project.
+- cd "C:\Users\Mcowa\OneDrive\Documents\GitHub\tswd_toronto_crime" 	# change directory to GitHub repo
+
+(7) uv: Python package manager
+# Command-line tool for managing Python packages and virtual environments.
+- uv init (e.g., "toronto_crime") 			# creates project-specific virtual environment (.venv appears)
+											# project’s dependencies (polars, numpy, etc.) installed and isolated.
+- uv pip install --upgrade uv				# upgrade uv to the latest version
+- uv pip install [package name]				# install packages (e.g., polars, numpy, etc.)
 											# polars: manipulating dfs, similar to pandas; https://pola.rs/
 											# numpy: simulating data (numbers/arrays); https://numpy.org/
 											# datetime: similar to lubridate (R); https://docs.python.org/3/library/datetime.html
 											# pydantic: for validation (checking rows, etc.); https://docs.pydantic.dev/latest/
-
-- pip freeze > requirements.txt				# creates a requirements.txt file with all packages and versions
-									
-# Acquire data added (02-download_data.py).
-- Initially saved as a paraquet (https://tellingstorieswithdata.com/21-python_essentials.html).
-- Realized maintaining original .csv and .xlsx is fine here. Deleted paraquet files and added files via write_csv and write_excel (xlsxwriter).
-- Auto-complete was on from multiple prior extensions in VScode. Disabled with settings.json (and turned off extensions).
-- Removed .qodo folder; disabled Qodo Gen and Path Intellisense extensions.
-
-# Based on the starter_folder repo, I'm guessing I had too many local files visible in the online repository (unnecessary).
-- Found a template and updated .gitignore while removing files/folder from the cache.
-
-# Updated README.md with Title and repo details (work in progress).
-
-# Data cleaning
-- Going to clean first to reduce the excessive amount of columns (will have a better idea of parameters for simulation).
-- Found documentation for what would be the equivalent of a R "select" in polars.
-- Cleaning in 2 separate spreadsheets (will join by neighbourhood after).
-
-# Sketches
-- Added dataset sketch.
-- Added graph sketch.
-- Analysis could be more detailed than a regression.
-
-# Simulate Data
-- Stuck on which distributions are appropriate to simulate the data (not enough clarity from TSWD given I haven't touched Poisson/beta etc. before).
-- Found something that seems to break them down (https://vitalflux.com/types-probability-distributions-defined-examples/), will ask for clarity.
-- Poisson distribution; mean variance the same, remember one parameter.
-
-# Clean & Merge
-- Cleaned both datasets sticking to Polars (had to transpose). Couldn't figure out the leftover row in the online documentation
-
-# Changed my idea (looking at something different now, focusing on descriptive rather than regression)
-
-# Realized I'm downloading in the way that wasn't instructed (supposed to use API) so updated script to query the API.
-
+- uv pip uninstall [package name]			# uninstall packages (e.g., polars, numpy, etc.)
+- uv pip show [package name]				# show details of a specific package (e.g., polars, numpy, etc.)
+- uv pip list								# list all installed packages in the current environment
+- uv pip install --upgrade [package name]	# upgrade packages (e.g., polars, numpy, etc.)
+- uv pip install [package name] --dev		# add dev packages (e.g., pytest, black, etc.)

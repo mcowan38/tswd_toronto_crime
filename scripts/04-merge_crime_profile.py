@@ -14,8 +14,8 @@ import functools  # inherent to Python
 import operator  # inherent to Python
 
 #### Load and merge neighbourhood crime and profile data ####
-crime_df = pl.read_csv("data/02-analysis_data/analysis_data_crime.csv")
-profile_df = pl.read_csv("data/02-analysis_data/analysis_data_profiles.csv")
+crime_df = pl.read_csv("data/02-analysis_data/00-analysis_data_crime.csv")
+profile_df = pl.read_csv("data/02-analysis_data/01-analysis_data_profiles.csv")
 
 # Anti-join to identify any name mismatches; "which crime names do not appear in profile_df?"
 # [https://docs.pola.rs/user-guide/transformations/joins/#semi-join]
@@ -112,4 +112,4 @@ clean_df = merged_df.select(
 )
 
 #### Save data ####
-clean_df.write_csv("data/02-analysis_data/merged_data.csv")
+clean_df.write_csv("data/02-analysis_data/02-analysis_data_merged.csv")

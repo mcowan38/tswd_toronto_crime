@@ -25,13 +25,11 @@ from sklearn.metrics import (
     silhouette_score,
 )  # Measure optimal k via silhouette score (higher is better)
 
-
 # Set random seed for reproducibility
 np.random.seed(838)
 
-
 #### Load SES features ####
-profiles = pl.read_csv("data/02-analysis_data/merged_data.csv")
+profiles = pl.read_csv("data/02-analysis_data/02-analysis_data_merged.csv")
 ses_columns = [
     "education_rate",  # proportion adults with a bachelor’s degree or higher
     "prop_single_parent",  # proportion of single-parent households
@@ -122,8 +120,8 @@ print(clustered)
 
 #### Save cluster data ####
 profiles.select(["neighbourhood", "cluster", "Socioeconomic Index"]).write_csv(
-    "data/02-analysis_data/neighbourhood_clusters.csv"
+    "data/02-analysis_data/03-cluster_neighbourhoods.csv"
 )
 
 # Append cluster info back to merged_data
-profiles.write_csv("data/02-analysis_data/merged_data.csv")
+profiles.write_csv("data/02-analysis_data/02-analysis_data_merged.csv")

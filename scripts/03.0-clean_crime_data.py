@@ -105,4 +105,4 @@ clean_df = clean_df.with_columns(
 clean_df = clean_df.rename({c: c.lower() for c in clean_df.columns})
 
 #### Save data ####
-clean_df.write_csv("data/02-analysis_data/analysis_data_crime.csv")
+clean_df.write_csv("data/02-analysis_data/00-analysis_data_crime.csv")

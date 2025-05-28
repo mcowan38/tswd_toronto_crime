@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path  # inherent to Python
 
 #### Load data ####
-merged_data = pl.read_csv("data/02-analysis_data/merged_data.csv")
+merged_data = pl.read_csv("data/02-analysis_data/02-analysis_data_merged.csv")
 crime_types = ["assault", "breakenter", "robbery", "shooting"]
 years = [2019, 2020, 2021, 2022, 2023, 2024]
 

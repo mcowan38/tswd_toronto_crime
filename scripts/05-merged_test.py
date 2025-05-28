@@ -16,10 +16,10 @@ import pytest  # test functions across any .py ending with "test"
 
 
 #### Test data ####
-# Test if data loads correctly (uses fixture function to try to read merged_data.csv)
+# Test if data loads correctly (uses fixture function to try to read 02-analysis_data_merged.csv)
 @pytest.fixture
 def merged_data():
-    return pl.read_csv("data/02-analysis_data/merged_data.csv")
+    return pl.read_csv("data/02-analysis_data/02-analysis_data_merged.csv")
 
 
 # Check that the dataset has 158 rows (there are 158 neighbourhoods in Toronto; height in polars)

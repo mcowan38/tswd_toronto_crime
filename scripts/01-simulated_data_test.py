@@ -44,7 +44,7 @@ def test_column_count(sim_data):
 # Check for missing values
 # [https://docs.pola.rs/api/python/stable/reference/dataframe/api/polars.DataFrame.null_count.html]
 def test_no_missing(sim_data):
-    # sum of null counts across all cols should be zero
+    # sum of null counts across all columns should be zero
     total_nulls = sim_data.null_count().to_series().sum()
     assert total_nulls == 0, f"Found {total_nulls} missing values"
 
@@ -90,14 +90,14 @@ def test_non_negative_counts(sim_data):
 
 # Check that the crime rates are actually plausible (guesstimating 0-2500 per 100K people)
 def test_plausible_rates(sim_data):
-    rate_cols = [
+    rate_columns = [
         "assault_rate",
         "robbery_rate",
         "breakenter_rate",
         "homicide_rate",
         "shooting_rate",
     ]
-    for column in rate_cols:
+    for column in rate_columns:
         # Select the min-max aggregates from the column
         min, max = sim_data.select(
             pl.col(column).min().alias(f"{column}_min"),

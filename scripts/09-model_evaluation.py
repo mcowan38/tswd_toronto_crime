@@ -27,7 +27,7 @@ from sklearn.metrics import (
 )
 
 # Load and scale SES features (equal weighting requirement for clustering)
-data = pl.read_csv("data/02-analysis_data/merged_data.csv")
+data = pl.read_csv("data/02-analysis_data/02-analysis_data_merged.csv")
 ses_columns = [
     "education_rate",
     "prop_single_parent",
@@ -41,7 +41,7 @@ scaled_matrix = StandardScaler().fit_transform(feature_matrix)
 # [https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html]
 pca_coordinates = PCA(n_components=2).fit_transform(scaled_matrix)
 
-# Define clustering configurations (K-means vs. GMM; k=2 vs. k=3) and colour maps
+# Define clustering configurations (K-means vs. GMM; k=2, 3) and colour maps
 cluster_configs = [
     ("KMeans", 2, "Paired", "KMeans (k=2)"),
     ("GMM", 2, "Accent", "GMM (k=2)"),
@@ -77,7 +77,7 @@ for idx, (model_type, num_clusters, colormap, title) in enumerate(cluster_config
     axes_pca[idx].legend(*scatter.legend_elements(), title="Cluster")
 
 fig_pca.suptitle(
-    "Dimensionality Reduced Clustering Results (KMeans vs. GMM)", fontsize=16
+    "Dimensionality Reduced Clustering Results ($K$-Means vs. GMM)", fontsize=16
 )
 fig_pca.tight_layout(rect=[0, 0.03, 1, 0.95])
 fig_pca.savefig("other/figures/fig_2_cluster_comparisons.png", dpi=300)
@@ -155,7 +155,7 @@ for i, metric in enumerate(metric_names):
 
 #### Save metrics figure ####
 fig_metrics.suptitle(
-    "Clustering Evaluation Metrics (KMeans vs. GMM; k = 2 vs. k = 3)", fontsize=16
+    "Clustering Evaluation Metrics ($K$-Means vs. GMM; k = 2, 3)", fontsize=16
 )
 fig_metrics.tight_layout(rect=[0, 0.03, 1, 0.95])
 fig_metrics.savefig("other/figures/fig_3_cluster_metrics.png", dpi=300)
@@ -177,16 +177,16 @@ eval_table = (
     .rename(
         {
             "Model": "Clustering Algorithm",
-            "k": "Clusters (k)",
-            "Silhouette": "Silhouette Score (↑)",
-            "Davies-Bouldin": "Davies-Bouldin (↓)",
-            "Calinski-Harabasz": "Calinski-Harabasz (↑)",
+            "k": "Clusters ($k$)",
+            "Silhouette": "Silhouette Score",
+            "Davies-Bouldin": "Davies-Bouldin",
+            "Calinski-Harabasz": "Calinski-Harabasz",
         }
     )
 )
 
-# Print in terminal
+# Preview
 print(eval_table)
 
-#### Save csv ####
-eval_table.write_csv("other/tables/cluster_evaluation_metrics.csv")
+#### Save CSV ####
+eval_table.write_csv("data/02-analysis_data/05-cluster_evaluation_metrics.csv")

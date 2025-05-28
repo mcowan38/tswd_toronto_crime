@@ -113,4 +113,4 @@ profile_clean = profile_clean.with_columns(
 )
 
 #### Save data ####
-profile_clean.write_csv("data/02-analysis_data/analysis_data_profiles.csv")
+profile_clean.write_csv("data/02-analysis_data/01-analysis_data_profiles.csv")
