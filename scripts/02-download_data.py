@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Downloads and saves Toronto neighbourhood profile and crime data from Open Data Toronto CKAN.
+# Purpose: Downloads and saves Toronto neighbourhood profile and crime data from Open Data Toronto's CKAN
 # Author: Mike Cowan
 # Date: 19 May 2025
 # Contact: m.cowan@mail.utoronto.ca

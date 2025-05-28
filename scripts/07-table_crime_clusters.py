@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Tables 2019–2024 crime trend data by Toronto neighbourhood clusters (percent change).
+# Purpose: Tables 2019–2024 crimee trend data by Toronto neighbourhood clusters (percent change).
 # Author: Mike Cowan
 # Date: 19 May 2025
 # Contact: m.cowan@mail.utoronto.ca

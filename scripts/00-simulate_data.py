@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Simulates a dataset of 2021-2024 Toronto neighbourhood crime data merged with Census data on single/dual-family households.
+# Purpose: Simulates a dataset of 2021-2024 Toronto neighbourhood crime data merged with Census data
 # Author: Mike Cowan
 # Date: 19 May 2025
 # Contact: m.cowan@mail.utoronto.ca

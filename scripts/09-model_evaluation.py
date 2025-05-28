@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Evaluates model fit of Kmeans vs. Gaussian clusters (k = 2, k = 3).
+# Purpose: Evaluates model fit of K-means vs. Gaussian clusters (k = 2, k = 3).
 # Author: Mike Cowan
 # Date: 19 May 2025
 # Contact: m.cowan@mail.utoronto.ca
