@@ -1,13 +1,13 @@
-# Neighbourhood Crime and SES [Work in Progress]
+# Toronto Neighbourhood Crime and Socioeconomic Proxies
 
 ## Overview
 
-This repo tests the hypothesis that Toronto neighbourhoods with a higher proportion of single-parent households tend to experience higher rates of serious crime (i.e., assault, break and enter, homicide, robbery, and shooting incidents). The analysis, conducted in Python, utilizes the City of Toronto's neighbourhood crime data (2019-2024) and census data (2021)--attained from the Open Data Toronto Portal.
+This paper examines how Toronto’s neighbourhood-level crime patterns evolved during the pandemic and its aftermath. We analyze official crime counts for Toronto’s neighbourhoods from 2019 through 2024, assessing how pre-existing social and economic inequalities—often termed “opportunity” or “advantage” differences—relate to diverging crime trends. Specifically, we classify Toronto neighbourhoods into Low-, Medium-, and High-Opportunity clusters via K-means clustering on socioeconomic proxies and compare the crime trajectories of these clusters over time. The analysis, conducted in Python, utilizes the City of Toronto's neighbourhood crime data (2019-2024) and Canadian Census data (2021) attained from the Open Data Toronto Portal.
 
 
 ## File Structure
 
-The repo is structured as:
+The repo is structured as follow:
 
 -   `data/00-simulated_data` contains simulated data used to test the analysis pipeline.
 -   `data/01-raw_data` contains the raw data as obtained from City of Toronto Open Data (https://open.toronto.ca/).
@@ -24,3 +24,4 @@ The Qodo Gen extension (AI auto-complete for VScode) was enabled during initial 
 - 03.1-clean_profile_data.py
 - 06.0-eda_neighbourhood_clusters.py
 - 06.1-eda_crime_clusters.py
+- [Forthcoming final update]
