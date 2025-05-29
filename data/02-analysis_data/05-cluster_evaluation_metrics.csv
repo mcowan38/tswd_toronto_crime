@@ -1,4 +1,4 @@
-Clustering Algorithm,Clusters (k),Silhouette Score (↑),Davies-Bouldin (↓),Calinski-Harabasz (↑)
+Clustering Algorithm,Clusters ($k$),Silhouette Score,Davies-Bouldin,Calinski-Harabasz
 GMM,2,0.141,1.958,30.4
 GMM,3,0.345,0.998,114.1
 KMeans,2,0.429,0.86,152.7

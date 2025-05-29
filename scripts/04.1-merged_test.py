@@ -7,12 +7,12 @@
 # Pre-requisites:
 # - `polars` must be installed (pip install polars)
 # - `pytest` must be installed (pip install pytest); run with "pytest -q"
+# References:
+# - [https://docs.pytest.org/en/stable]
 
 #### Workspace setup ####
 import polars as pl
 import pytest  # test functions across any .py ending with "test"
-
-# [https://docs.pytest.org/en/stable/]
 
 
 #### Test data ####
@@ -63,7 +63,7 @@ def test_variable_types(merged_data):
         "prop_single_parent": pl.Float64,  # proportion (float between 0 and 1)
         "prop_single_parent": pl.Float64,  # proportion (0–1)
         "median_income": pl.Float64,  # continuous
-        "unemployment_rate": pl.Float64,  # %
+        "unemployment_rate": pl.Float64,  # proportion
         "total_education": pl.Float64,  # count
         "bachelors_or_higher": pl.Float64,  # count
         "education_rate": pl.Float64,  # proportion (0–1)

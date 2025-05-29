@@ -47,3 +47,12 @@ R, Python shells			Language REPLs		For writing in R or Python interactively
 - uv pip list								# list all installed packages in the current environment
 - uv pip install --upgrade [package name]	# upgrade packages (e.g., polars, numpy, etc.)
 - uv pip install [package name] --dev		# add dev packages (e.g., pytest, black, etc.)
+
+(8) Main Functions
+# Wrap all code into a function def_main().
+- Use `if __name__ == "__main__": to call the function when the script is run directly.
+
+(9) paper.qmd
+# paper.qmd: Quarto Markdown file.
+- [#sec-paper-section]: Call with "@" (useful in telegraphing paragraph, etc.)
+

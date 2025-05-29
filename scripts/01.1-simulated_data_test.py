@@ -7,12 +7,12 @@
 # Pre-requisites:
 # - `polars` must be installed (pip install polars)
 # - `pytest` must be installed (pip install pytest); run with "pytest -q"
+# References:
+# - [https://docs.pytest.org/en/stable/]
 
 #### Workspace setup ####
 import polars as pl
 import pytest  # test functions across any .py ending with "test"
-
-# [https://docs.pytest.org/en/stable/]
 
 
 #### Test data ####
