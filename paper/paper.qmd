@@ -145,7 +145,7 @@ Our analysis complements Toronto municipal research by tracking the persistence 
 
 # Data {#sec-data}
 
-We utilize the programming language Python [@python] alongside Polars [@polars] and scikit-learn [@scikit-learn] for the paper’s data cleaning and analysis.^[The workflow and GitHub-based project structure follow best practices from @tellingstories.]
+We utilize the programming language Python [@python] alongside Polars [@polars] and scikit-learn [@scikit-learn] for the paper’s data cleaning and analysis.
 
 ### Neighbourhood Crime Data
 
