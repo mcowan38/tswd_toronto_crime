@@ -1,16 +1,16 @@
 ---
-title: "Neighbourhood Crime in Toronto (2019–2024)"
-subtitle: "Analyzing Crime Trends in Low, Medium, and High Socioeconomic Areas"
+title: "The Evolution of Neighbourhood Crime in Toronto (2019–2024)"
+subtitle: "A Cluster Analysis Across Socioeconomic Opportunity Levels"
 author: 
   - name: "Mike Cowan"
     affiliation: "University of Toronto"
 thanks: |
-  Code and data are available at: [https://github.com/mcowan38/tswd_toronto_crime].
-date: "19 May 2025"
+  Code and data are available at: https://github.com/mcowan38/tswd_toronto_crime.
+date: "today"
 date-format: long
 execute:
   echo: false
-abstract: This paper examines how neighbourhood-level crime trajectories in Toronto evolved from 2019 through 2024, using socioeconomic clustering to identify crime rate divergence across 158 Toronto neighbourhoods. Drawing on data from the 2021 Canadian Census and the Toronto Police Service, we applied $K$-means clustering to group neighbourhoods into three socioeconomic categories reflecting relative socioeconomic advantage (High-, Medium-, and Low- Opportunity) and compared crime rates across these clusters over time. Across all four crime types, Low Opportunity neighbourhoods experienced persistently higher rates—especially for assault and shootings—while High Opportunity areas remained relatively insulated. Following a city-wide decline in break-and-enters during the 2020 lockdown, crime rebounded steeply in deprived areas, with robbery and gun violence disproportionately escalating through 2023. These findings highlight persistent socioeconomic disparities in crime exposure, with disadvantaged neighbourhoods bearing a disproportionate share of urban crime.
+abstract: This paper examines how neighbourhood-level crime trajectories in Toronto evolved from 2019 through 2024, using socioeconomic clustering to identify crime rate divergence across 158 Toronto neighbourhoods. Drawing on data from the 2021 Canadian Census and the Toronto Police Service, we applied $K$-means clustering to group neighbourhoods into three socioeconomic categories reflecting relative socioeconomic advantage (Low-, Medium-, and High-Opportunity) and compared crime rates across these clusters over time. Following the city-wide decline in crime associated with the 2020 lockdown, non-property crime rebounded in the two less-advantaged clusters. On aggregate, Low-Opportunity neighbourhoods experienced persistently higher non-property crime rates while High-Opportunity areas remained comparatively insulated from violent crime altogether. These findings highlight the socioeconomic disparities in Toronto crime exposure, with disadvantaged neighbourhoods bearing a disproportionate share of urban crime and absorbing most of the post-pandemic increase in crime rates.
 format: 
   pdf: 
     fig-pos: "H"
@@ -113,39 +113,43 @@ cluster_configs = [
 
 # Introduction
 
-The COVID-19 pandemic disrupted social and economic systems worldwide—and crime trends were no exception. In Canada, police-reported incidents plummeted in 2020 before rebounding sharply in 2021 (Statistics Canada, 2021), with violent crime surging 5% above pre-pandemic levels while property crime fell to historic lows.
+The COVID-19 pandemic disrupted social and economic systems worldwide—and crime trends were no exception. In Canada, police-reported incidents decreased in 2020 before rebounding in 2021, with violent crime increasing 5% above pre-pandemic levels [@statscan_csi].
 
-However, these national trends obscure local disparities; crime clusters unevenly across urban spaces, concentrated in areas marked by structural inequities—e.g., income inequality, educational disparities, and labour market marginalization [@mohammadi_2022_homicide; @wang_2019_the]. This spatial unevenness is particularly pronounced in Toronto, Canada’s largest city, where neighbourhoods diverge sharply in socioeconomic conditions—from affluent enclaves to zones of concentrated disadvantage [@jargowsky_2015_concentrated].
+However, these national trends obscure local disparities; crime is distributed unevenly across urban spaces, concentrating in areas marked by structural inequities—e.g., income inequality, educational disparities, and labour market marginalization [@hipp_2007; @mohammadi_2022; @jargowsky_2015]. This spatial unevenness is particularly pronounced in Toronto, Canada’s largest city, where neighbourhoods vary widely in socioeconomic conditions—from affluent enclaves to zones of concentrated disadvantage [@wang_2019].
 
-To further examine these phenomena, this paper analyzes Toronto’s neighbourhood-level crime trends during the pandemic and its aftermath. We analyze official crime counts for Toronto’s neighbourhoods from 2019 through 2024, assessing how pre-existing social and economic inequalities relate to diverging crime trends. Specifically, we classify Toronto neighbourhoods into Low-, Medium-, and High-Opportunity clusters via $K$-means clustering on socioeconomic proxies and compare the crime trajectories of these clusters over time. 
+To explore these phenomena, this paper traces neighbourhood-level crime trajectories from the pandemic to its aftermath. We analyze official crime counts for Toronto’s neighbourhoods from 2019 through 2024, assessing how pre-existing social and economic inequalities relate to diverging crime trends. Specifically, we classify Toronto neighbourhoods into Low-, Medium-, and High-Opportunity clusters via $K$-means clustering on socioeconomic proxies and compare the crime trajectories of these clusters over time. 
 
-This paper proceeds as follows: First, we ground our analysis in criminological frameworks—i.e., social disorganization and strain—which help explain how neighbourhood opportunity structures (e.g., income, education, employment) may condition crime trends (@sec-literature-review). Next, we describe our data (@sec-data) and model (@sec-model), justifying our construction of neighbourhood opportunity clusters and analyzing their distinct crime trajectories from 2019 to 2024 (@sec-results, with model diagnostics provided in @sec-model-evaluation). We then consider what our neighbourhood-level results might suggest for understanding spatially differentiated crime dynamics in Toronto (@sec-discussion). We conclude by discussing study limitations (@sec-limitations).
+Disaggregating Toronto into three opportunity clusters revealed that crime patterns in Medium-Opportunity neighbourhoods align with either High- or Low-Opportunity neighbourhoods depending on the offence (@sec-results; @sec-cluster-plots). For assault and robbery, Medium-Opportunity neighbourhoods tracked Low-Opportunity trajectories: both declined during the 2020 lockdown and rose steadily through 2023, whereas High-Opportunity areas remained comparatively stable. Conversely, Medium- and High-Opportunity clusters experienced a tandem decline in break-and-enter (B&E) incidents from 2019 to 2021, although High-Opportunity neighbourhoods experienced a rebound that surpassed pre-pandemic levels in 2023. Gun violence stayed consistently low and flat in Medium- and High-Opportunity areas, yet Low-Opportunity neighbourhoods—already recording more than twice as many shootings—registered a renewed increase in 2023 after their lockdown decline.
+
+The paper proceeds as follows: First, we ground our analysis in criminological frameworks—i.e., social disorganization and strain—which help explain how neighbourhood opportunity structures (e.g., income, education, employment) may condition crime trends (@sec-literature-review). Next, we describe our data (@sec-data) and model (@sec-model), justifying the construction of neighbourhood opportunity clusters and analyzing their distinct crime trajectories from 2019 to 2024 (@sec-results; model diagnostics provided in @sec-model-evaluation). We then consider what our neighbourhood-level results might suggest for understanding spatially differentiated crime dynamics in Toronto (@sec-discussion). We conclude by discussing study limitations (@sec-limitations).
 
 
 # Literature Review {#sec-literature-review}
 
-Criminological theory and empirical evidence converge on two insights in urban crime literature: (1) neighbourhood-level structural conditions fundamentally shape crime, and (2) spatial inequalities between neighbourhoods amplify these effects.
+Criminological theory and empirical evidence converge on two principles in the urban crime literature: (1) neighbourhood-level structural conditions fundamentally shape crime, and (2) spatial inequalities between neighbourhoods amplify these effects.
 
-Social disorganization theory suggests that poverty, residential instability, ethnic heterogeneity, and family disruption erode collective efficacy—the capacity of communities to enforce informal social controls. The resulting conditions create criminogenic environments where crime flourishes due to weakened guardianship-an institutional presence to deter crime-and institutional neglect [@antunes_2021_social; @frevel_2021_local]. Strain theory complements this perspective, arguing that material deprivation and relative disadvantage generate frustration that may motivate criminal coping strategies, particularly during systemic crises-e.g., the COVID-19 pandemic [@antunes_2021_social].
+Social disorganization theory suggests that poverty, residential instability, ethnic heterogeneity, and family disruption erode collective efficacy—the capacity of communities to enforce informal social controls [@antunes_2021]. The resulting conditions create criminogenic environments where crime is prevalent due to weakened guardianship—an institutional presence that deters crime—and institutional neglect [@frevel_2021]. Strain theory complements this perspective, arguing that material deprivation and relative disadvantage generate frustration that may motivate criminal coping strategies during periods of crisis—e.g., the COVID-19 pandemic [@antunes_2021].
 
-More recent work highlights the importance of spatial inequality—the juxtaposition of affluence and deprivation across proximate neighbourhoods; inter-neighbourhood income disparities, rather than city-wide inequality alone, predict localized violence (Kang, 2016)-suggesting that proximity to wealth exacerbates perceptions of exclusion and strain [@wang_2019_the; @uesugi_2024_a]. These findings align with contemporary research in Paterson, NJ, which suggests that median household income exerts the strongest neighbourhood-level influence on crime patterns [@yu_2025_how].
+Further research highlights the importance of spatial inequality—the juxtaposition of affluence and deprivation across proximate neighbourhoods; inter-neighbourhood income disparities, rather than city-wide inequality alone, predict localized violence [@chamberlain_2015; @kang_2016]—suggesting that proximity to wealth could further exacerbate exclusion and strain [@wang_2019; @uesugi_2024]. These expectations are consistent with recent evidence from Paterson, New Jersey, where median household income has been identified as the most powerful predictor of crime patterns at the neighbourhood level [@yu_2022].
 
-Decades of evidence confirm that concentrated disadvantage—marked by poverty, unemployment, and single-parent households—correlates strongly with elevated crime rates [@frevel_2021_local; @jargowsky_2015_concentrated]. Toronto exemplifies this dynamic: neighbourhoods with higher marginalization indices exhibit disproportionately high rates of violent and property crime [@wang_2019_the], while areas with entrenched poverty report elevated homicide incidence [@mohammadi_2022_homicide]. However, the spatial heterogeneity of these relationships in major cities is also critical. For example, geographically weighted regression studies in Chicago [@arnio_2012_demography] and Tokyo [@uesugi_2024_a] reveal that the strength—and even the direction—of socioeconomic predictors of burglary or robbery vary across neighbourhoods. 
+Decades of evidence confirm that concentrated disadvantage—characterized by poverty, unemployment, and single-parent households—strongly correlates with elevated crime rates [@frevel_2021; @jargowsky_2015; @andresen_2022]. Toronto exemplifies this dynamic: neighbourhoods with higher marginalization indices exhibit disproportionately high rates of violent and property crime [@wang_2019], while areas with entrenched poverty report elevated homicide incidence [@mohammadi_2022]. However, the spatial heterogeneity of these relationships in major cities is also critical. For example, geographically weighted regression studies in Chicago [@arnio_2012] and Tokyo [@uesugi_2024] reveal that the strength—and even the direction—of socioeconomic predictors of burglary or robbery vary across neighbourhoods. 
 
-The COVID-19 pandemic exposed and amplified these spatial inequities. Initial lockdowns reduced city-wide crime by diminishing routine activities, but declines in some cities were uneven [@andresen_2022_in]. For instance, while property crime in Vancouver decreased in wealthy neighbourhoods with robust security infrastructure, violent crime surged in disadvantaged areas strained by disrupted social services and weakened guardianship.
+The COVID-19 pandemic exposed and amplified these spatial inequities. Initial lockdowns reduced city-wide crime by diminishing routine activities but declines in some cities were uneven [@andresen_2022]. For instance, while property crime in Vancouver decreased in wealthy neighbourhoods with robust security infrastructure, violent crime surged in disadvantaged areas strained by disrupted social services and weakened guardianship.
 
-These patterns underscore three lessons: First, structural disadvantage predicts vulnerability to crime spikes during crises, aligning with social disorganization theory’s emphasis on resource-deprived communities. Second, inter-neighbourhood inequality magnifies criminogenic risks, as strain theory posits when relative deprivation fuels frustration. Third, opportunity structures—e.g., access to security, institutional support, and economic stability—can be spatially stratified, privileging affluent areas with systemic advantages.
+To summarize, social disorganization theory suggests that resource deprivation can increase crime risk. Inter-neighbourhood inequality—e.g., access to security, institutional support, and economic stability—can be spatially stratified and magnify these risks. Strain theory posits that relative deprivation fuels frustration—a motivator for crime. 
 
-Building on these insights, we operationalize “opportunity” as relative access to stabilizing socioeconomic conditions—a small, composite measure proxied by median income, educational attainment, employment status, and household structure. Our analysis, focusing on Toronto neighbourhoods, compliments prior research in two ways: first, we expand the temporal scope to 2019–2024, assessing whether pandemic-era disparities persisted into the recovery phase. Second, we apply $K$-means clustering to classify neighbourhoods into High-, Medium-, and Low-Opportunity clusters using variables (income, education, employment) empirically shown to influence crime patterns [@yu_2025_how]. If social disorganization and strain theories hold, Low-Opportunity clusters should exhibit both higher baseline crime rates and greater volatility during disruptions, reflecting their structural precarity.
+Accordingly, we expect that Toronto’s socioeconomically disadvantaged areas were more susceptible to increases in crime rates after the lockdown period. To examine this possibility, we operationalize “opportunity” as relative access to stabilizing socioeconomic conditions—a small, composite measure proxied by median income, educational attainment, employment status, and household structure. We apply $K$-means clustering to classify neighbourhoods into High-, Medium-, and Low-Opportunity clusters using variables (and proxies) empirically shown to influence crime patterns [i.e., income, education, employment, and household status; @yu_2022]. If social disorganization and strain theories hold, Low-Opportunity clusters should exhibit both higher baseline crime rates and greater volatility during disruptions, reflecting their structural precarity.
+
+Our analysis complements Toronto municipal research by tracking the persistence of pandemic-era socioeconomic disparities through the recovery phase.
 
 
 # Data {#sec-data}
 
-We utilize the programming language Python [@python] alongside Polars [@polars] and scikit-learn [@scikit-learn] for the paper’s data cleaning and analysis.\footnote{The workflow and GitHub-based project structure follow best practices guided by Alexander (2023), which has proven to be an excellent resource: [https://tellingstorieswithdata.com].}
+We utilize the programming language Python [@python] alongside Polars [@polars] and scikit-learn [@scikit-learn] for the paper’s data cleaning and analysis.^[The workflow and GitHub-based project structure follow best practices from @tellingstories.]
 
 ### Neighbourhood Crime Data
 
-We sourced crime data from the Open Data Toronto Portal [@citeOpenDataToronto], which includes assaults, break-and-enters (B&E), robberies, and shootings—the types of crime we chose to analyze between 2019 and 2024. Crime rates per 100,000 persons were calculated by the City of Toronto using population estimates from Environics Analytics, in accordance with Statistics Canada’s standard definition. Each entry includes incident years and total counts by neighbourhood (see @tbl-crime_data_preview).
+We source crime data from the Open Data Toronto Portal [@citeOpenDataToronto], which includes assaults, B&E, robberies, and shootings—our variables of interest. Crime rates per 100,000 persons were calculated by the City of Toronto using population estimates from Environics Analytics, in accordance with Statistics Canada’s standard definition. Each entry includes incident years and total counts by neighbourhood (see @tbl-crime_data_preview).
 
 ```{python}
 # | label: tbl-crime_data_preview
@@ -174,7 +178,7 @@ crime_glimpse.to_pandas()
 
 ### Neighbourhood Census Profiles
 
-2021 Toronto Census Profile data was obtained from the Open Data Toronto Portal [@citeOpenDataToronto], which draws on Statistics Canada’s Census of Population to compile selected demographic and socioeconomic indicators. We transformed a subset of these variables—originally aggregated to Toronto’s 158 social planning neighbourhoods—to align with the neighbourhood identifiers used in the crime dataset (see @tbl-census_data_preview).
+We obtained 2021 Toronto Census Profile data from the Open Data Toronto Portal [@citeOpenDataToronto], which draws on Statistics Canada’s Census of Population to compile selected demographic and socioeconomic indicators. We transformed a subset of these variables—originally aggregated to Toronto’s 158 social planning neighbourhoods—to align with the neighbourhood identifiers used in the crime dataset (see @tbl-census_data_preview).
 
 ```{python}
 # | label: tbl-census_data_preview
@@ -207,21 +211,21 @@ profile_glimpse.to_pandas()
 
 ## Measurement
 
-Transforming the realities of Toronto’s neighbourhoods into data suitable for our analysis required two steps: (1) constructing a composite socioeconomic profile for each neighbourhood and (2) aggregating police‐reported crime counts to rate units. 
+Transforming Toronto neighbourhood data into an analysis-ready format involved two steps: (1) constructing a composite socioeconomic profile for each neighbourhood (converting counts into rates) and (2) aggregating police‐reported crime rates.
 
-From the Census data, we extracted four attributes that decades of criminological research identify as correlates of neighbourhood crime: median household income, share of adults with a bachelor’s degree or higher, unemployment rate, and proportion of single-parent families. 
+From the Census data, we extracted four attributes that years of criminological research identify as correlates of neighbourhood crime: median household income, share of adults with a bachelor’s degree or higher, unemployment rate, and proportion of single-parent families. Where population denominators were available, we converted raw counts into neighbourhood proportions. In instances where rate data were provided, we retained the available figures without transformation.
 
-From the crime dataset, we aggregated annual counts of assaults, B&E, robberies, and shootings (2019–2024). Where population denominators were available, we converted raw counts into rates per 100,000 persons at the neighbourhood level. In instances where rate data were already provided, we retained the available figures without transformation.
+From the crime dataset, we aggregated annual rates of assaults, B&E, robberies, and shootings between 2019 and 2024. 
 
 These two sources were paired by Toronto’s 158 neighbourhoods, yielding socioeconomic features and crime rates from the early pre-pandemic to post-pandemic periods.
 
 # Model {#sec-model}
 
-Cognizant of prior criminological studies—which have employed powerful spatial models to characterize neighbourhood heterogeneity in crime and socioeconomic conditions, utilizing substantially more predictors [@mohammadi_2022_homicide; @uesugi_2024_a; @wang_2019_the; @yu_2025_how]—we apply $K$-means clustering to four standardized indicators—education rate, proportion of single-parent households, unemployment rate, and median household income—to cluster neighbourhoods based on their socioeconomic similarity.
+Cognizant of prior criminological studies—which have employed spatial models to characterize neighbourhood heterogeneity in crime and socioeconomic conditions, utilizing substantially more predictors [@mohammadi_2022; @uesugi_2024; @wang_2019; @yu_2022]—we apply $K$-means clustering to four standardized indicators—education rate, proportion of single-parent households, unemployment rate, and median household income—to cluster neighbourhoods based on their socioeconomic similarity.
 
-The $K$-means algorithm identifies the set of cluster centroids ${\mu_k}$ that minimizes the total within-cluster sum of squared distances (WCSS)\footnote{Mathematical notation adapted from Hastie et al. (2009).}. In simple terms, the algorithm partitions observations into $K$ groups such that data points within each group are as similar as possible to one another. Similarity is measured by the squared Euclidean distance between each observation and the average of its assigned group—called the cluster centroid. The goal is to find centroid locations that minimize the total variation within each cluster, producing compact and well-separated groups.
+The $K$-means algorithm identifies the set of cluster centroids ${\mu_k}$ that minimizes the total within-cluster sum of squared distances (WCSS)^[Mathematical notation adapted from @hastie_2009.]. The algorithm partitions observations into $K$ groups such that data points within each group are as similar as possible to one another. Similarity is measured by the squared Euclidean distance between each observation and the average of its assigned group—called the cluster centroid. The goal is to find centroid locations that minimize the total variation within each cluster, producing compact and well-separated groups.
 
-Let $\mathbf{x_i} = (x_{i1}, x_{i2}, x_{i3}, x_{i4})$ denote the four-dimensional vector of z-scored socioeconomic features for neighbourhood $i$, where $i = 1, \dots, N = 158$. Each vector includes standardized values for (1) median household income, (2) the proportion of residents with a bachelor’s degree or higher, (3) the unemployment rate, and (4) the single-parent household rate.
+Let $\mathbf{x_i} = (x_{i1}, x_{i2}, x_{i3}, x_{i4})$ denote the four-dimensional vector of $z$-scored socioeconomic features for neighbourhood $i$, where $i = 1, \dots, N = 158$. Each vector includes standardized values for (1) median household income, (2) the proportion of residents with a bachelor’s degree or higher, (3) the unemployment rate, and (4) the single-parent household rate.
 
 Each raw feature is standardized by 
 $$
@@ -239,9 +243,10 @@ $$
 
 where $\mu_{z_i}$ is the centroid of neighbourhood $i$’s assigned cluster.
 
-We tested $K = 2, \dots, 5$ and selected $K = 3$ based on silhouette diagnostics (see @sec-model-evaluation). Additionally, Principal Components Analysis—conducted as a diagnostic check—showed that the first two components explain ~89% of total variance, confirming a strong low-dimensional socioeconomic gradient underlying the four indicators.
+We tested $K = 2, \dots, 5$ and selected $K = 3$ based on silhouette diagnostics (see @sec-model-evaluation). Additionally, Principal Components Analysis—conducted as a diagnostic check—showed that the first two components explain ~89% of the total variance, confirming a strong low-dimensional socioeconomic gradient underlying the four indicators.
 
-We adopted a three-group classification—High, Medium, and Low Opportunity—aligned with standard socioeconomic strata commonly used in policy discourse and everyday language (i.e., upper, middle, and lower class). Based on this scheme, the resulting clusters are labelled as shown in @tbl-cluster_stats below.
+We adopted a three-group classification—Low-, Medium-, and Low-Opportunity—aligned with standard socioeconomic strata commonly used in policy discourse and everyday language (i.e., upper, middle, and lower class). Based on this scheme, the resulting clusters are labelled as shown in @tbl-cluster_stats below.
+
 ```{python}
 # | label: tbl-cluster_stats
 # | tbl-cap: Descriptive Statistics by Opportunity Cluster (2019–2024)
@@ -268,9 +273,9 @@ cluster_summary = (
 cluster_summary
 ```
 
-*Note.* @tbl-cluster_stats presents the average socioeconomic features by cluster for Toronto neigbourhoods over 2019–2024. Clusters were derived via $K$-means clustering on standardized education rate, proportion of single-parent households, unemployment rate, and median household income. High-Opportunity (Cluster 0) neighbourhoods exhibit high educational attainment and median income alongside low unemployment and single-parent household rates. Medium-Opportunity (Cluster 1) neighbourhoods display a mixed socioeconomic profile. Low-Opportunity (Cluster 2) neighbourhoods are characterized by lower education and income, and higher unemployment and single-parent household rates. All values represent means of each indicator across the period of study.
+*Note.* @tbl-cluster_stats presents the average socioeconomic features by cluster for Toronto neighbourhoods over 2019–2024. Clusters were derived via $K$-means clustering on standardized education rate, proportion of single-parent households, unemployment rate, and median household income. High-Opportunity (Cluster 0) neighbourhoods exhibit high educational attainment and median income alongside low unemployment and single-parent household rates. Medium-Opportunity (Cluster 1) neighbourhoods display a mixed socioeconomic profile. Low-Opportunity (Cluster 2) neighbourhoods are characterized by lower education and income, and higher unemployment and single-parent household rates. All values represent means of each indicator across the period of study.
 
-Although we also explored Gaussian Mixture Models (GMM)\footnote{GMM models the data as a mixture of $K$ multivariate normal distributions, estimating a mean vector and covariance matrix for each component.}—which relax the spherical cluster assumption imposed by $K$-means [@scikit-learn], we retained the $K$-means technique due to its superior evaluation scores and greater interpretability (both methods produced broadly similar neighbourhood groupings; see @fig-cluster_pca).
+Although we also explored Gaussian Mixture Models (GMM)^[GMM models the data as a mixture of $K$ multivariate normal distributions, estimating a mean vector and covariance matrix for each component.]—which relax the spherical cluster assumption imposed by $K$-means [@scikit-learn]—we retained the $K$-means technique due to its superior evaluation scores and greater interpretability (both methods produced broadly similar neighbourhood groupings; see @fig-cluster_pca).
 
 
 # Results {#sec-results}
@@ -279,7 +284,7 @@ Our results are summarized in @fig-crime_trends.
 
 ```{python}
 # | label: fig-crime_trends
-# | fig-cap: Average Crime Rate Trends by Socioeconomic Cluster (2019–2024)
+# | fig-cap: Average Crime Rate Trends by Opportunity Cluster (2019–2024)
 # | fig-cap-location: top
 
 ### Trends plot ####
@@ -331,45 +336,42 @@ fig.tight_layout(rect=[0, 0.03, 1, 0.95])
 plt.show()
 ```
 
-*Note.* @fig-crime_trends plots trends in crime rates for Assault, Break-and-Enter, Robbery, and Shootings. For each year and crime type, the figure shows the mean rate across all neighbourhoods within each cluster.
+*Note.* @fig-crime_trends plots trends in crime rates for Assault, B&E, Robbery, and Shootings. For each year and crime type, the figure shows the mean rate across all neighbourhoods within each cluster.
 
 @fig-crime_trends illustrates how crime unfolded across Toronto’s neighbourhoods between 2019 and 2024. In Low-Opportunity neighbourhoods, assault rates edged upward from 758 to 805 incidents per 100,000 persons—an increase of 6.2%—while Medium-Opportunity areas saw an 8.0% rise, from 737 to 796 per 100,000. Even High-Opportunity neighbourhoods experienced a modest 8.0% uptick in assaults, climbing from 446 to 482 per 100,000.
 
 By contrast, the divergence between neighbourhood type and violent crimes is more pronounced. Robbery rates in High-Opportunity areas decreased by roughly one-third (a 34.5% reduction), falling from 95 to 62 per 100,000, whereas Low-Opportunity clusters recorded a smaller decline of 16.9% (126 → 104). Medium-Opportunity wards registered an 18.5% drop (124 → 101). Shooting incidents fell most dramatically in Low-Opportunity areas—dropping from 27.95 to 15 per 100,000, a 44.0% decrease—while Medium- and High-Opportunity neighbourhoods saw reductions of 19.0% (10 → 8) and 18.5% (5 → 4), respectively.
 
-The 2020 city-wide dip in B&Es—driven, in part, by greater residential presence—was particularly deep in deprived areas, where rates fell 26.0% from 246 to 182 per 100,000 between 2019 and 2020. However, by 2023, Low-Opportunity wards had rebounded to 214 incidents per 100,000—just 12.9% below their pre-pandemic level. Medium-Opportunity neighbourhoods saw a more sustained decline, with B&E down 24.1% (329 → 249), while High-Opportunity areas only edged 2.2% above 2019 levels (348 → 356)\footnote{See Table 3 for the breakdown of the year-to-year rate change.}.
+The 2020 city-wide dip in B&Es—driven, in part, by greater residential presence—was particularly deep in deprived areas, where rates fell 26.0% from 246 to 182 per 100,000 between 2019 and 2020. However, by 2023, Low-Opportunity wards had rebounded to 214 incidents per 100,000—just 12.9% below their pre-pandemic level. Medium-Opportunity neighbourhoods saw a more sustained decline, with B&E down 24.1% (329 → 249), while High-Opportunity areas only edged 2.2% above 2019 levels (348 → 356)^[See @sec-tables for the breakdown of the year-to-year rate change.].
 
 # Discussion {#sec-discussion}
 
-Adopting a three-cluster solution revealed noticeable patterns that would be obscured by a binary split (specifically, $K = 2$; see @sec-model-evaluation), underscoring the value of an intermediate socioeconomic category. While Low-Opportunity neighbourhoods began the pre-pandemic period with higher baseline crime as was expected, the Medium-Opportunity cluster exhibited dynamic behaviour, pairing with High- and Low-Opportunity trajectories depending on crime type.
+Adopting a three-cluster solution revealed noticeable patterns that would be obscured by a binary split (specifically, $K = 2$; see @sec-model-evaluation), underscoring the value of an intermediate socioeconomic category. While Low-Opportunity neighbourhoods entered the pre-pandemic period with elevated baseline crime rates and, despite some fluctuations, remained the most affected overall, the Medium-Opportunity cluster displayed more variable patterns, aligning with either High- or Low-Opportunity trajectories depending on the crime type.
 
-Low- and Medium-Opportunity areas displayed similar rates of year-to-year change across all crime types (with the exception of B&E): a sharp decline during the 2020 lockdown, followed by a steady rise from 2022 to 2023. This suggests a shared vulnerability once a threshold of concentrated disadvantage is crossed, in alignment with social disorganization theory [@antunes_2021_social; @frevel_2021_local]. Weakened collective efficacy and disrupted informal social controls likely triggered uniform social breakdown across these areas, of their relative positions on the socioeconomic spectrum. 
+Low- and Medium-Opportunity areas displayed similar rates of year-to-year change across all crime types (with the exception of B&E): a sharp decline during the 2020 lockdown, followed by a steady rise from 2022 to 2023. This suggests a shared vulnerability once a threshold of concentrated disadvantage is crossed, in alignment with social disorganization theory [@antunes_2021; @frevel_2021]. Weakened collective efficacy and disrupted informal social controls likely triggered uniform social breakdown across these areas of their relative positions on the socioeconomic spectrum. 
 
-In contrast, robbery crimes showed a similar arc across all clusters-dipping during the lockdown and rebounding post-2021-but the steepest uptick occurred in Low-Opportunity areas, closely followed by Medium-Opportunity zones. This erosion of distinction implies that mounting economic strain and institutional disengagement can rapidly intensify motivations for acquisitive crime in disadvantaged neighbourhoods [@antunes_2021_social]. Noticeably, High-Opportunity neighborhoods remained relatively insulated, showing only modest growth post-lockdown.
+In contrast, robbery crimes showed a similar arc across all clusters, dipping during the lockdown and rebounding post-2021; however, the steepest uptick occurred in Low-Opportunity neighbourhoods, closely followed by Medium-Opportunity areas. This erosion of distinction implies that mounting economic strain and institutional disengagement can rapidly intensify motivations for acquisitive crime in disadvantaged neighbourhoods [@antunes_2021]. Noticeably, High-Opportunity neighbourhoods remained relatively insulated, showing only modest growth after the lockdown.
 
-B&E crime rates diverged sharply in the years following the pandemic. While all clusters had declined substantially-Medium- and High-Opportunity largely areas moved in tandem-High-Opportunity neighbourhoods experienced a significant spike, surpassing their 2019 rates. This spike likely reflects shifts in routine activity patterns: as residents of affluent areas returned to in-person work and travel, homes were left unoccupied more frequently, reducing natural guardianship and increasing opportunities for property crime.
+All neighbourhoods experienced a substantial decline in B&E rates in the years following the pandemic. However, while Medium- and High-Opportunity areas largely moved in tandem, High-Opportunity neighbourhoods experienced a significant increase in 2023—surpassing their pre-pandemic rates. This variation could reflect shifts in routine activity patterns [@wang_2019]: as residents of affluent areas returned to in-person work and travel, homes were left unoccupied more frequently, reducing natural guardianship and increasing opportunities for property crime.
 
-Lastly, shootings were equally low in Medium-Opportunity and High-Opportunity neighbourhoods, both maintaining relatively flat trajectories from 2019 to 2024. In stark contrast, however, Low-Opportunity areas—where the majority of the crimes appear to have occurred—experienced a sharp surge in 2023.
+Lastly, shootings were equally low in Medium-Opportunity and High-Opportunity neighbourhoods, both maintaining relatively flat trajectories from 2019 to 2024. In stark contrast, however, Low-Opportunity areas—where the majority of the crimes appear to have occurred—experienced a substantial increase in 2023.
 
-Social disorganization theory helps to explain the persistent vulnerability of disadvantaged areas [@antunes_2021_social; @frevel_2021_local]. Concentrated disadvantage erodes collective efficacy and informal controls, hindering the ability to sustain safety gains during and after shocks—such as the lockdown [@jargowsky_2015_concentrated].
+Social disorganization theory offers a useful lens for understanding fluctuations in crime rates post-lockdown. Concentrated disadvantage weakens informal social control and collective efficacy, leaving neighbourhoods with fewer resources more susceptible to rising crime when constraints lift [@antunes_2021; @jargowsky_2015]. Accordingly, Low- and Medium-Opportunity neighbourhoods proved more vulnerable to a post-pandemic rebound in robbery once mobility restrictions eased. In contrast, better-resourced neighbourhoods—supported by stronger safety capacities [@frevel_2021]—largely preserved their lockdown-era gains, with the notable exception of burglary.
 
-These theoretical dynamics are reflected in the observed post-pandemic trends. The rapid rebound in property crime and sustained elevation of violent crime in Low-Opportunity areas, alongside upward trends in Medium-Opportunity zones (robbery and shootings, albeit less intensely), also could reflect this diffusion of strain-related pressures [@yu_2025_how]. Furthermore, strain theory clarifies the steep post-2020 rise in robbery and shootings within Low-Opportunity clusters [@antunes_2021_social]. Cumulative stressors—economic hardship, institutional disengagement, perceived exclusion—amplified by the pandemic likely intensified motivations for these crimes.
-
-The widening gap between Low- and High-Opportunity clusters, especially for robbery and gun violence, signals deepening intra-urban inequality and intensifying crime concentration in the most vulnerable areas [@mohammadi_2022_homicide; @uesugi_2024_a].
+Furthermore, the sustained elevation of violent crime in Low-Opportunity areas, together with a milder rise in Medium-Opportunity zones (for assault and shootings), may indicate the spread of strain-related pressures across disadvantaged neighbourhoods [@antunes_2021]. Pandemic-amplified stressors—economic hardship, institutional disengagement, and perceived exclusion—likely intensified motivations for these offences. These same pressures appear to be widening the crime gap between Low- and High-Opportunity clusters—most clearly in robbery and gun violence—thereby deepening intra-urban inequality and concentrating crime in the city’s most vulnerable areas [@mohammadi_2022; @uesugi_2024; @andresen_2022].
 
 
-
-## Limitations {#sec-limitations}
+# Limitations {#sec-limitations}
 
 This study has several data-oriented limitations. First, our analysis is ecological in nature, drawing conclusions from neighbourhood-level aggregates rather than individual-level data. As such, we cannot determine whether individuals with certain socioeconomic characteristics are more likely to experience or perpetrate crime; we can only observe area-level patterns.
 
 Second, the analysis relies solely on police-reported crime data, which are subject to well-documented limitations. Not all crimes are reported to law enforcement, and fluctuations in patrol coverage, resource allocation, or surveillance infrastructure can artificially inflate or deflate recorded incidents. These reporting inconsistencies likely vary across neighbourhoods, potentially skewing cross-area comparisons.
 
-Additionally, the socioeconomic data we use are static, drawn from the 2021 Census. These indicators—income, education, unemployment, and single-parent status—cannot capture changes that occurred before or after 2021. Moreover, we excluded several potentially important variables—such as neighbourhood ethnic composition, immigration status, and residential mobility—which may shape both crime exposure and neighbourhood opportunity in substantive ways. As a result, our clustering captures only a partial view of structural disadvantage.
+Additionally, the socioeconomic variables we use are static, drawn solely from the 2021 Census data. These indicators—income, education, unemployment, and single-parent status—cannot capture changes that occurred before or after 2021. Similarly, we excluded several potentially important variables—such as neighbourhood ethnic composition, immigration status, and residential mobility—which may shape both crime exposure and neighbourhood opportunity in substantive ways [@hipp_2007]. As a result, our clustering captures only a partial view of structural disadvantage.
 
-Fourth, our method for grouping neighbourhoods—$K$-means clustering—makes simplifying assumptions. It treats all four variables as equally important and assumes the clusters are roughly circular and evenly sized when, in reality, socioeconomic differences are rarely tidy [@scikit-learn]. Alternative clustering methods that do not require an *a priori* estimation of $K$ groups (e.g., MAP-DP; see Raykov et al., 2016) may better ascertain the true structure of the data.
+Fourth, our method for grouping neighbourhoods—$K$-means clustering—makes simplifying assumptions. It treats all four variables as equally important and assumes the clusters are roughly circular and evenly sized when, in reality, socioeconomic differences are rarely tidy [@scikit-learn]. Alternative clustering methods that do not require an *a priori* estimation of $K$ groups [e.g., MAP-DP; @raykov_2016] may better ascertain the true structure of the data.
 
-Future research should address these gaps by using dynamic, multi-year socioeconomic data, incorporating a broader range of variables, and accounting for spatial relationships between neighbourhoods. In addition, combining quantitative patterns with qualitative accounts of neighbourhood residents could also help ground the numbers in the lived experiences of residents.
+Future research could address these gaps by incorporating a broader range of socioeconomic indicators [see @statscan_cimd], quantifying crime severity rather than relying on incident counts [see @statscan_csi], and accounting for the geospatial relationships between neighbourhoods. In addition, combining quantitative patterns with qualitative accounts of neighbourhood residents could also help ground the numbers in the lived experiences of residents.
 
 \newpage
 
@@ -379,11 +381,13 @@ Future research should address these gaps by using dynamic, multi-year socioecon
 
 ## Model Evaluation {#sec-model-evaluation}
 
-### Cluster Plots
+The construction of socioeconomic composite measures can meaningfully influence model outcomes [@vyas_2006]. More sophisticated approaches may more accurately capture the underlying structure among variables, but can require larger samples and introduce greater model complexity. Simpler methods, such as standardizing individual indicators (e.g., income, education, unemployment) and summing their $z$-scores offer more straightforward interpretability but may obscure multidimensional relationships. 
 
-A choice of socioeconomic index can meaningfully shift the resulting clusters. One straightforward approach is to standardize each indicator (e.g., income, education, unemployment) to z-scores and sum them [@vyas_2006_constructing]. Alternatively, factor analysis, which derives weights from latent dimensions (e.g., “Economic Capital” or “Family Stability”), can better reflect the structure among variables but requires more complex modelling and larger samples.
+Balancing these trade-offs and acknowledging the exploratory scope of our study—alongside a concise, well-theorized set of continuous variables—we chose the $K$-means algorithm for its capacity to generate easily interpretable, mutually exclusive neighbourhood groupings.
 
-Given that our inquiry is exploratory, we opted to employ $K$-means. @fig-cluster_pca reduces our data to the first two principal components for visualization purposes. To guard against algorithmic artifacts, we place K-means—characterized by hard, spherical boundaries—alongside Gaussian Mixture Models, which allow for soft, ellipsoidal groupings (@scikit-learn). Consistency across both models strengthens confidence that the identified neighbourhood clusters reflect meaningful socioeconomic divisions—and that our clustering choice was appropriate.
+### Cluster Plots {#sec-cluster-plots}
+
+@fig-cluster_pca reduces our data to the first two principal components for visualization purposes. To guard against algorithmic artifacts, we place K-means—characterized by hard, spherical boundaries—alongside Gaussian Mixture Models, which allow for soft, ellipsoidal groupings (@scikit-learn). Consistency across both models strengthens confidence that the identified neighbourhood clusters reflect meaningful socioeconomic divisions—and that our clustering choice was appropriate.
 
 
 ```{python}
@@ -420,7 +424,7 @@ plt.show()
 
 ### Evaluation Metrics
 
-@fig-cluster_metrics presents a detailed comparison of clustering quality across $K$-means and Gaussian mixture models\footnote{Code and evaluation metrics more detail can be found in scikit-learn documentation (Pedregosa et al., 2011).}. We compute the Silhouette Score (ranging from –1 to 1; higher values indicate better cohesion and separation) to assess how closely each point is matched to its own cluster versus the next best alternative. The Davies–Bouldin Index measures the average similarity between each cluster and its most similar counterpart—lower values denote more compact, well-separated clusters. Finally, the Calinski–Harabasz Score quantifies the ratio of between-cluster dispersion to within-cluster dispersion—higher scores signify clearer, more distinct groupings.
+@fig-cluster_metrics presents a detailed comparison of clustering quality across $K$-means and Gaussian mixture models^[Code and evaluation metrics detailed in @scikit-learn documentation.]. We compute the Silhouette Score (ranging from –1 to 1; higher values indicate better cohesion and separation) to assess how closely each point is matched to its own cluster versus the next best alternative. The Davies–Bouldin Index measures the average similarity between each cluster and its most similar counterpart—lower values denote more compact, well-separated clusters. Finally, the Calinski–Harabasz Score quantifies the ratio of between-cluster dispersion to within-cluster dispersion—higher scores signify clearer, more distinct groupings.
 
 The clustering plots below help illustrate our choice of $K$-means with $K = 3$, which offers clearer group separation and a more stable cluster structure. In the $K$-means panels, the groupings are relatively distinct—particularly at $K = 3$, where clusters are well-separated across the principal component space. By contrast, the Gaussian Mixture Model results show less defined boundaries; at both values of $K$ (especially $K = 2$), there is greater overlap between adjacent clusters and less visual separation-aligning with GMM’s lower Silhouette and higher Davies–Bouldin Index values (see @fig-cluster_metrics).
 
@@ -487,9 +491,9 @@ Note. @fig-cluster_metrics displays three cluster-validation metrics for both $K
 
 While $K = 2$ yields a slightly higher Calinski–Harabasz Score (152.7 vs. 133.0), its gain in cluster compactness comes at the expense of interpretability: the two-group solution collapses meaningful socioeconomic variation between middle- and high-income neighbourhoods into a single cluster. In practical terms, the difference between the average median income of the two upper clusters ($132,368.42 vs. $88,775.00) is substantial and justifies treating them as analytically distinct.
 
-### Average Yearly Crime Rate Change by Neighbourhood Opportunity Cluster
+## Average Yearly Crime Rate Change by Neighbourhood Opportunity Cluster {#sec-tables}
 
-#### Neighbourhood Assault
+### Neighbourhood Assault
 
 ```{python}
 # | label: tbl-rate_change_assault
@@ -498,7 +502,7 @@ While $K = 2$ yields a slightly higher Calinski–Harabasz Score (152.7 vs. 133.
 
 #### Assault % Change ####
 assault_change = assault_change.rename(
-    {"Low": "Low Opportunity", "Med": "Medium Opportunity", "High": "High Opportunity"}
+    {"Low": "Low-Opportunity ", "Med": "Medium-Opportunity", "High": "High-Opportunity"}
 )
 
 #### Display (in pandas to remove backticks, etc.) ####
@@ -507,7 +511,7 @@ assault_change.to_pandas()
 
 *Note.* @tbl-rate_change_assault reports the 2019 baseline assault rate and year-over-year percent changes (2020–2024) for each cluster.
 
-#### Break-and-Enter
+### Break-and-Enter (B&E)
 
 ```{python}
 # | label: tbl-rate_change_breakenter
@@ -516,7 +520,7 @@ assault_change.to_pandas()
 
 #### Break-and-Enter % Change ####
 breakenter_change = breakenter_change.rename(
-    {"Low": "Low Opportunity", "Med": "Medium Opportunity", "High": "High Opportunity"}
+    {"Low": "Low-pportunity", "Med": "Medium-Opportunity", "High": "High-Opportunity"}
 )
 
 #### Display (in pandas to remove backticks, etc.) ####
@@ -525,7 +529,7 @@ breakenter_change.to_pandas()
 
 *Note.* @tbl-rate_change_breakenter reports the 2019 baseline break-and-enter rate and annual percent changes.
 
-#### Robbery
+### Robbery
 
 ```{python}
 # | label: tbl-rate_change_robbery
@@ -534,7 +538,7 @@ breakenter_change.to_pandas()
 
 #### Robbery % Change ####
 robbery_change = robbery_change.rename(
-    {"Low": "Low Opportunity", "Med": "Medium Opportunity", "High": "High Opportunity"}
+    {"Low": "Low-Opportunity", "Med": "Medium-Opportunity", "High": "High-Opportunity"}
 )
 
 #### Display (in pandas to remove backticks, etc.) ####
@@ -543,7 +547,7 @@ robbery_change.to_pandas()
 
 *Note.* @tbl-rate_change_robbery reports the 2019 baseline robbery rate and annual percent changes.
 
-#### Shooting
+### Shooting
 
 ```{python}
 # | label: tbl-rate_change_shooting
@@ -552,7 +556,7 @@ robbery_change.to_pandas()
 
 #### Shooting % Change ####
 shooting_change = shooting_change.rename(
-    {"Low": "Low Opportunity", "Med": "Medium Opportunity", "High": "High Opportunity"}
+    {"Low": "Low-Opportunity", "Med": "Medium-Opportunity", "High": "High-Opportunity"}
 )
 
 #### Display (in pandas to remove backticks, etc.) ####

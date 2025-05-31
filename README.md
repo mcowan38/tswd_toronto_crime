@@ -1,8 +1,8 @@
-# Neighbourhood Crime in Toronto (2019–2024): Analyzing Crime Trends in Low, Medium, and High Socioeconomic Areas
+# The Evolution of Neighbourhood Crime in Toronto (2019–2024): A Cluster Analysis Across Socioeconomic Opportunity Levels
 
 ## Overview
 
-This paper examines how Toronto’s neighbourhood-level crime patterns evolved during the pandemic and its aftermath. We analyze official crime counts for Toronto’s neighbourhoods from 2019 through 2024, assessing how pre-existing social and economic inequalities shaped both shared and divergent crime trends. Specifically, we classify Toronto neighbourhoods into Low-, Medium-, and High-Opportunity clusters via K-means clustering on socioeconomic proxies and compare the crime trajectories of these clusters over time. The analysis, conducted in Python, utilizes the City of Toronto's neighbourhood crime data (2019–2024) and Canadian Census data (2021) attained from the Open Data Toronto Portal.
+This paper examines how Toronto’s neighbourhood-level crime patterns evolved during the pandemic and its aftermath. We analyze official crime rates for Toronto’s neighbourhoods from 2019 through 2024, assessing how pre-existing social and economic inequalities shaped divergent crime trends. Specifically, we classify Toronto neighbourhoods into Low-, Medium-, and High-Opportunity clusters via $K$-means clustering on socioeconomic proxies and compare the crime trajectories of these clusters over time. The analysis, conducted in Python, utilizes the City of Toronto's neighbourhood crime data (2019–2024) and Canadian Census data (2021) attained from the Open Data Toronto Portal.
 
 
 ## File Structure
@@ -41,14 +41,14 @@ The repo is structured as follows:
 
 ## Statement on LLM usage
 
-This project were developed with the assistance of LLMs. 
+This project was developed with the assistance of LLMs. 
 
-1. **AI-assisted code completion** (e.g., GitHub Copilot, Qodo Gen) was used throughout development.  
-2. **Prompt-based support** via the `04-mini-high` model aided in:  
+**1. AI-assisted code completion** (e.g., GitHub Copilot, Qodo Gen) was used throughout development.  
+**2. Prompt-based support** via the `04-mini-high` model aided in:  
    - Error messaging and debugging within selected scripts;  
    - Refining mathematical notation and function documentation;  
-   - Formatting LaTeX sections of the Quarto manuscript.
+   - Formatting the Quarto manuscript.
 
 ## Pre-requisites
 -   Install required Python packages as specified in `uv.lock`.  
--   Run all tests with `pytest`. 
+-   Run all tests with `pytest`.
