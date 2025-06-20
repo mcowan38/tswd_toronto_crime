@@ -18,7 +18,7 @@ The repo is structured as follows:
 ### `scripts/`  
 -   `00.0-run_pipeline.py` executes the entire data processing pipeline from simulation to final outputs.
 -   `01.0-simulate_data.py` generates synthetic datasets to test logic.
--   01.1-simulated_data_test.py` tests the structure of the simulated data.
+-   `01.1-simulated_data_test.py` tests the structure of the simulated data.
 -   `02.0-download_data.py`  downloads the raw neighbourhood crime counts (2019–2024) and Census socioeconomic indicators (2021) from the City of Toronto's Open Data Portal.
 -   `03.0-clean_crime_data.py` preprocesses the raw crime data.
 -   `03.1-clean_profile_data.py` preprocesses the raw Census data.
